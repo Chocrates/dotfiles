@@ -18,8 +18,8 @@ if dein#load_state('/Users/chocrates/.cache/dein')
   call dein#add('rust-lang/rust.vim')
   call dein#add('preservim/tagbar')
   call dein#add('vim-airline/vim-airline')
-  "call dein#add('Shougo/neosnippet.vim')
-  "call dein#add('Shougo/neosnippet-snippets')
+  call dein#add('tpope/vim-eunuch')
+  call dein#add('mcchrish/nnn.vim')
 
   " Required:
   call dein#end()

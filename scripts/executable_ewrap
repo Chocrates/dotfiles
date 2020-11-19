@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+echo "what is happening"
+if ! { [ "$TERM" = "screen-256color" ] && [ -n "$TMUX" ]; } then
+    # Remove option --tab for new window
+    iterm --tab -e "nvim \"$*\""
+else
+    # tmux session running
+    tmux split-window -h "nvim \"$*\""
+fi
