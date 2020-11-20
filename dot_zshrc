@@ -119,13 +119,16 @@ export PYENV_ROOT="/Users/chocrates/.pyenv"
 export PIPENV_PYTHON=$PYENV_ROOT/shims/python
 alias vim="/usr/local/bin/nvim"
 export VISUAL=ewrap
-
+export EDITOR=nvim
+eval "$(pyenv init -)"
 
 
 # NNN Config
-
+alias nnn='nnn -e'
 # Bookmarks
 export NNN_BMS='w:~/workspace'
+# Plugins
+export NNN_PLUG='t:treeview'
 # Enable cd on quit when called as 'n'
 n ()
 {

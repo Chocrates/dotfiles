@@ -20,6 +20,11 @@ if dein#load_state('/Users/chocrates/.cache/dein')
   call dein#add('vim-airline/vim-airline')
   call dein#add('tpope/vim-eunuch')
   call dein#add('mcchrish/nnn.vim')
+  call dein#add('racer-rust/vim-racer')
+  call dein#add('autozimu/LanguageClient-neovim', {
+    \ 'rev': 'next',
+    \ 'build': 'bash install.sh',
+    \ })
 
   " Required:
   call dein#end()
@@ -95,7 +100,7 @@ set wildignore+=**/node_modules/**
 
 nnoremap <C-j> :%!python3 -m json.tool<cr>
 nnoremap <C-x> :%!xmllint --format -<cr>
-nnoremap <C-o> :%!~/workspace/pyorder/order.py<cr>
+"nnoremap <C-o> :%!~/workspace/pyorder/order.py<cr>
 nnoremap <C-y> :%!clip.exe && powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr><cr>
 nnoremap <C-p> :%!powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr><cr>
 nmap <F8> :TagbarToggle<CR>
@@ -110,9 +115,33 @@ let g:ctrlp_cmd = 'CtrlP'
 if has("autocmd")
     autocmd FileType go set ts=2 sw=2 sts=2 noet autowrite
 endif
-
+" rust.vim config
 let g:rustfmt_autosave = 1
+
 " Airline Config
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
+
+" Racer Config
+set hidden
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
+
+" RLS config
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'nightly', 'rls'],
+    \ 'python': ['/usr/local/bin/pyls'],
+    \ }
+
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
