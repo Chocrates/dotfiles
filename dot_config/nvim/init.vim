@@ -16,7 +16,7 @@ if dein#load_state('/Users/chocrates/.cache/dein')
 
   " Add or remove your plugins here like this:
   call dein#add('rust-lang/rust.vim')
-  call dein#add('preservim/tagbar')
+  " call dein#add('preservim/tagbar')
   call dein#add('vim-airline/vim-airline')
   call dein#add('tpope/vim-eunuch')
   call dein#add('mcchrish/nnn.vim')
@@ -25,6 +25,15 @@ if dein#load_state('/Users/chocrates/.cache/dein')
     \ 'rev': 'next',
     \ 'build': 'bash install.sh',
     \ })
+  call dein#add('liuchengxu/vista.vim')
+  call dein#add('psf/black')
+  call dein#add('prettier/vim-prettier')
+
+  call dein#add('nvim-lua/popup.nvim')
+  call dein#add('nvim-lua/plenary.nvim')
+  call dein#add('nvim-telescope/telescope.nvim')
+  call dein#add('pwntester/octo.nvim')
+
 
   " Required:
   call dein#end()
@@ -36,9 +45,9 @@ filetype plugin indent on
 syntax enable
 
 " If you want to install not installed plugins on startup.
-"if dein#check_install()
-"  call dein#install()
-"endif
+if dein#check_install()
+  call dein#install()
+endif
 
 "End dein Scripts-------------------------
 
@@ -51,6 +60,8 @@ set encoding=utf-8
 " filetype on
 " filetype plugin on
 
+" Enable matchit macro for html/xml navigation
+packadd! matchit
 
 " The default for 'backspace' is very confusing to new users, so change it to a
 " more sensible value.  Add "set backspace&" to your ~/.vimrc to reset it. 
@@ -103,14 +114,20 @@ nnoremap <C-x> :%!xmllint --format -<cr>
 "nnoremap <C-o> :%!~/workspace/pyorder/order.py<cr>
 nnoremap <C-y> :%!clip.exe && powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr><cr>
 nnoremap <C-p> :%!powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr><cr>
-nmap <F8> :TagbarToggle<CR>
+" TagBar Config
+" nmap <F8> :TagbarToggle<CR>
+" Vista Config
+nmap <F8> :Vista!!<CR>
+let g:vista_default_executive = 'ctags'
+let g:vista_sidebar_width = 20
+
 nnoremap <C-f> :set foldenable<cr>
 nnoremap <C-r> :set nofoldenable<cr>
 
 autocmd VimResized * wincmd =
 
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
 
 if has("autocmd")
     autocmd FileType go set ts=2 sw=2 sts=2 noet autowrite
@@ -139,9 +156,19 @@ augroup END
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'nightly', 'rls'],
     \ 'python': ['/usr/local/bin/pyls'],
+    \ 'typescript': ['~/.nvm/versions/node/v14.4.0/bin/typescript-language-server', '--stdio'],
+    \ 'javascript': ['~/.nvm/versions/node/v14.4.0/bin/typescript-language-server', '--stdio'],
     \ }
 
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+" Run Black on save.
+autocmd BufWritePre *.py execute ':Black'
+
+" Doesn't work on jinja templates
+"autocmd BufWritePre *.html,*.js,*.ts execute ':PrettierAsync'
+"
+let g:python3_host_prog = '/Users/chocrates/.pyenv/versions/py3nvim/bin/python'
