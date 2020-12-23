@@ -34,6 +34,7 @@ if dein#load_state('/Users/chocrates/.cache/dein')
   call dein#add('nvim-telescope/telescope.nvim')
   call dein#add('pwntester/octo.nvim')
 
+  call dein#add('tpope/vim-commentary')
 
   " Required:
   call dein#end()
