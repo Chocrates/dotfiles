@@ -7,6 +7,6 @@ This contains my current set of dotfiles managed with [chezmoi](https://github.c
   - `chezmoi init <clone url>`
 - Apply the dotfiles
   - `chezmoi apply`
+
+
 *Note:* These instructions are pulled from [this great quickstart](https://github.com/twpayne/chezmoi/blob/master/docs/QUICKSTART.md)
-
-
