@@ -27,7 +27,7 @@ if dein#load_state('/Users/chocrates/.cache/dein')
     \ })
   call dein#add('liuchengxu/vista.vim')
   call dein#add('psf/black')
-  call dein#add('prettier/vim-prettier')
+  call dein#add('prettier/vim-prettier', {'build': 'npm install' })
 
   call dein#add('nvim-lua/popup.nvim')
   call dein#add('nvim-lua/plenary.nvim')
@@ -39,6 +39,11 @@ if dein#load_state('/Users/chocrates/.cache/dein')
   call dein#add('tpope/vim-commentary')
   call dein#add('neoclide/coc.nvim', { 'rev': 'release' })
   call dein#add('APZelos/blamer.nvim')
+    
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('junegunn/gv.vim')
+
+  call dein#add('fatih/vim-go')
 
   " Required:
   call dein#end()
@@ -125,6 +130,8 @@ nnoremap <C-p> :%!powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr>
 nmap <F8> :Vista!!<CR>
 let g:vista_default_executive = 'ctags'
 let g:vista_sidebar_open_cmd = 'rightbelow30vsplit'
+let g:vista#render#enable_icon = 1
+"let g:vista_log_file = './vista.log'
 
 nnoremap <C-f> :set foldenable<cr>
 nnoremap <C-r> :set nofoldenable<cr>
@@ -158,7 +165,7 @@ augroup Racer
 augroup END
 
 " COC Config
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-html', 'coc-css', 'coc-python', 'coc-rls']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-html', 'coc-css', 'coc-jedi', 'coc-rls', 'coc-go', 'coc-solargraph', 'coc-java']
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -327,6 +334,12 @@ autocmd BufWritePre *.py execute ':Black'
 " Doesn't work on jinja templates
 autocmd BufWritePre *.js,*.ts execute ':PrettierAsync'
 "
+" Run python json tool on save
+autocmd FileType json autocmd BufWritePre <buffer> %!python -m json.tool
+
+" Format Go files
+autocmd FileType *.go Fmt
+
 let g:python3_host_prog = '/Users/chocrates/.pyenv/versions/py3nvim/bin/python'
 
 " blamer config

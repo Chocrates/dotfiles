@@ -102,7 +102,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
-#
+
+# Bullet Train Theme config
+BULLETTRAIN_VIRTUALENV_BG=black
 
 which green >& /dev/null && source "$( green --completion-file )"
 unsetopt nomatch
@@ -114,7 +116,7 @@ function zipdiff() { diff -W200 -y --suppress-common-lines <(unzip -vql $1 | sor
 alias findbin='find . -type f -not -path "./.git/*" -exec perl -MFile::Basename -e '\''print (-T $_ ? "" : (fileparse ($_, qr/\.[^.]*/))[2] . "\n" ) for @ARGV'\'' {} + | sort | uniq'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="$PATH:$HOME/.rvm/bin:/usr/local/mysql/bin"
 export PYENV_ROOT="/Users/chocrates/.pyenv"
 export PIPENV_PYTHON=$PYENV_ROOT/shims/python
 alias vim="/usr/local/bin/nvim"
@@ -157,3 +159,14 @@ n ()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
+# added by github/training-manual class setup
+test -f "/Users/chocrates/.trainingmanualrc" && source "/Users/chocrates/.trainingmanualrc"
+
+source ~/.trainingmanualrc
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
+
+alias inflate='ruby -r zlib -e "STDOUT.write Zlib::Inflate.inflate(STDIN.read)"'
+
+~/.tmux/plugins/tmux-logging/scripts/toggle_logging.sh
