@@ -1,53 +1,64 @@
 "dein Scripts-----------------------------
 if &compatible
-  set nocompatible               " Be iMproved
+    set nocompatible               " Be iMproved
 endif
 
 " Required:
 set runtimepath+=/Users/chocrates/.cache/dein/repos/github.com/Shougo/dein.vim
 
 " Required:
+let g:dein#install_github_api_token = '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'
 if dein#load_state('/Users/chocrates/.cache/dein')
-  call dein#begin('/Users/chocrates/.cache/dein')
+    call dein#begin('/Users/chocrates/.cache/dein')
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('/Users/chocrates/.cache/dein/repos/github.com/Shougo/dein.vim')
+    " Let dein manage dein
+    " Required:
+    call dein#add('/Users/chocrates/.cache/dein/repos/github.com/Shougo/dein.vim')
 
-  " Add or remove your plugins here like this:
-  call dein#add('rust-lang/rust.vim')
-  " call dein#add('preservim/tagbar')
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('tpope/vim-eunuch')
-  call dein#add('mcchrish/nnn.vim')
-  call dein#add('racer-rust/vim-racer')
-  call dein#add('autozimu/LanguageClient-neovim', {
-    \ 'rev': 'next',
-    \ 'build': 'bash install.sh',
-    \ })
-  call dein#add('liuchengxu/vista.vim')
-  call dein#add('psf/black')
-  call dein#add('prettier/vim-prettier', {'build': 'npm install' })
+    " Add or remove your plugins here like this:
+    call dein#add('rust-lang/rust.vim')
+    " call dein#add('preservim/tagbar')
+    call dein#add('vim-airline/vim-airline')
+    call dein#add('tpope/vim-eunuch')
+    call dein#add('mcchrish/nnn.vim')
+    call dein#add('racer-rust/vim-racer')
+    call dein#add('autozimu/LanguageClient-neovim', {
+                \ 'rev': 'next',
+                \ 'build': 'bash install.sh',
+                \ })
+    call dein#add('liuchengxu/vista.vim')
+    call dein#add('psf/black')
+    call dein#add('prettier/vim-prettier', {'build': 'npm install' })
 
-  call dein#add('nvim-lua/popup.nvim')
-  call dein#add('nvim-lua/plenary.nvim')
-  call dein#add('nvim-treesitter/nvim-treesitter')
-  call dein#add('kyazdani42/nvim-web-devicons')
-  call dein#add('nvim-telescope/telescope.nvim')
-  call dein#add('pwntester/octo.nvim')
+    call dein#add('nvim-lua/popup.nvim')
+    call dein#add('nvim-lua/plenary.nvim')
+    call dein#add('nvim-treesitter/nvim-treesitter')
+    call dein#add('kyazdani42/nvim-web-devicons')
+    call dein#add('nvim-telescope/telescope.nvim')
+    call dein#add('pwntester/octo.nvim')
 
-  call dein#add('tpope/vim-commentary')
-  call dein#add('neoclide/coc.nvim', { 'rev': 'release' })
-  call dein#add('APZelos/blamer.nvim')
-    
-  call dein#add('tpope/vim-fugitive')
-  call dein#add('junegunn/gv.vim')
+    call dein#add('tpope/vim-commentary')
+    call dein#add('neoclide/coc.nvim', { 'rev': 'release' })
+    call dein#add('APZelos/blamer.nvim')
 
-  call dein#add('fatih/vim-go')
+    call dein#add('tpope/vim-fugitive')
+    call dein#add('junegunn/gv.vim')
 
-  " Required:
-  call dein#end()
-  call dein#save_state()
+    call dein#add('fatih/vim-go')
+    call dein#add('clangd/coc-clangd')
+
+    call dein#add('git@github.com:github/copilot.vim.git')
+
+    call dein#add('vim-autoformat/vim-autoformat')
+    call dein#add('ngmy/vim-rubocop')
+
+    call dein#add('Shougo/deol.nvim')
+
+    call dein#add('ellisonleao/glow.nvim')
+
+    " Required:
+    call dein#end()
+    call dein#save_state()
 endif
 
 " Required:
@@ -56,13 +67,13 @@ syntax enable
 
 " If you want to install not installed plugins on startup.
 if dein#check_install()
-  call dein#install()
+    call dein#install()
 endif
 
 "End dein Scripts-------------------------
 
 colorscheme slate
-highlight Normal guibg=black guifg=lightblue 
+highlight Normal guibg=black guifg=lightblue
 set background=dark
 
 scriptencoding utf-8
@@ -74,7 +85,7 @@ set encoding=utf-8
 packadd! matchit
 
 " The default for 'backspace' is very confusing to new users, so change it to a
-" more sensible value.  Add "set backspace&" to your ~/.vimrc to reset it. 
+" more sensible value.  Add "set backspace&" to your ~/.vimrc to reset it.
 set backspace=indent,eol,start
 
 " Disable localized menus for now since only some items are translated (e.g.
@@ -91,7 +102,7 @@ se foldmethod=syntax
 let g:jsx_ext_required = 0
 
 set listchars=eol:~,tab:>.,trail:~,extends:>,precedes:<,space:_
-set list
+" set list
 set hlsearch
 set cursorline " highlights the current line
 hi CursorLine term=bold cterm=bold
@@ -120,6 +131,11 @@ set path+=/mnt/c/workspace/**,~
 set wildignore+=**/node_modules/**
 
 nnoremap <C-j> :%!python3 -m json.tool<cr>
+if has('macunix')
+    nnoremap ∆ :%!sh -c "sed -E 's/(None\|True\|False)/\"\1\"/g' \| sed 's/'\''/\"/g' \| jq '.'"<cr>
+else
+    nnoremap <A-j> :%!sh -c "sed -E 's/(None\|True\|False)/\"\1\"/g' \| sed 's/'\''/\"/g' \| jq '.'"<cr>
+endif
 nnoremap <C-x> :%!xmllint --format -<cr>
 "nnoremap <C-o> :%!~/workspace/pyorder/order.py<cr>
 nnoremap <C-y> :%!clip.exe && powershell.exe -command "get-clipboard" \| sed 's/\r/\n/g'<cr><cr>
@@ -165,7 +181,7 @@ augroup Racer
 augroup END
 
 " COC Config
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-html', 'coc-css', 'coc-jedi', 'coc-rls', 'coc-go', 'coc-solargraph', 'coc-java']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-html', 'coc-css', 'coc-jedi', 'coc-rls', 'coc-go', 'coc-solargraph', 'coc-java', 'coc-clangd']
 
 " Some servers have issues with backup files, see #649.
 set nobackup
@@ -184,37 +200,37 @@ set shortmess+=c
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
+    " Recently vim can merge signcolumn and number column into one
+    set signcolumn=number
 else
-  set signcolumn=yes
+    set signcolumn=yes
 endif
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
 if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <silent><expr> <c-space> coc#refresh()
 else
-  inoremap <silent><expr> <c-@> coc#refresh()
+    inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -231,13 +247,13 @@ nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    elseif (coc#rpc#ready())
+        call CocActionAsync('doHover')
+    else
+        execute '!' . &keywordprg . " " . expand('<cword>')
+    endif
 endfunction
 
 " Highlight the symbol and its references when holding the cursor.
@@ -251,11 +267,11 @@ xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd!
+    " Setup formatexpr specified filetype(s).
+    autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+    " Update signature help on jump placeholder.
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 " Applying codeAction to the selected region.
@@ -281,12 +297,12 @@ omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
 if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+    inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+    vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
 " Use CTRL-S for selections ranges.
@@ -329,19 +345,34 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " End COC Config
 
 " Run Black on save.
-autocmd BufWritePre *.py execute ':Black'
+"autocmd BufWritePre *.py execute ':Black'
 
 " Doesn't work on jinja templates
-autocmd BufWritePre *.js,*.ts execute ':PrettierAsync'
+"autocmd BufWritePre *.js,*.ts execute ':PrettierAsync'
 "
 " Run python json tool on save
-autocmd FileType json autocmd BufWritePre <buffer> %!python -m json.tool
+"autocmd FileType json autocmd BufWritePre <buffer> %!python -m json.tool
 
 " Format Go files
-autocmd FileType *.go Fmt
+"autocmd FileType *.go Fmt
+
+" Autoformat using plugin
+au BufWrite * :Autoformat
 
 let g:python3_host_prog = '/Users/chocrates/.pyenv/versions/py3nvim/bin/python'
 
 " blamer config
 let g:blamer_template = '<committer>, <committer-time> <commit-short> • <summary>'
 let g:blamer_date_format = '%y-%m-%d'
+
+" Autoformat Config
+let g:formatters_python = ['black']
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
+" Fugitive go to URL
+vnoremap <Leader>gb :GBrowse<CR>
+
+" Glow config
+let g:glow_style = "light"
