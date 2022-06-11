@@ -4,16 +4,16 @@ if &compatible
 endif
 
 " Required:
-set runtimepath+=/Users/chocrates/.cache/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=$HOME/.cache/dein/repos/github.com/Shougo/dein.vim
 
 " Required:
-let g:dein#install_github_api_token = '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'
-if dein#load_state('/Users/chocrates/.cache/dein')
-    call dein#begin('/Users/chocrates/.cache/dein')
+let g:dein#install_github_api_token = ''
+if dein#load_state('$HOME/.cache/dein')
+    call dein#begin('$HOME/.cache/dein')
 
     " Let dein manage dein
     " Required:
-    call dein#add('/Users/chocrates/.cache/dein/repos/github.com/Shougo/dein.vim')
+    call dein#add('$HOME/.cache/dein/repos/github.com/Shougo/dein.vim')
 
     " Add or remove your plugins here like this:
     call dein#add('rust-lang/rust.vim')
@@ -359,7 +359,7 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " Autoformat using plugin
 au BufWrite * :Autoformat
 
-let g:python3_host_prog = '/Users/chocrates/.pyenv/versions/py3nvim/bin/python'
+let g:python3_host_prog = '$HOME/.pyenv/versions/py3nvim/bin/python'
 
 " blamer config
 let g:blamer_template = '<committer>, <committer-time> <commit-short> • <summary>'
