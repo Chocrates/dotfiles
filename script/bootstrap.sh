@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# Configure zsh as default shell
+sudo chsh -s $(which zsh) vscode
 sudo apt update
 sudo ln -fs /usr/share/zoneinfo/America/Chicago /etc/localtime
 sudo dpkg-reconfigure --frontend noninteractive tzdata
