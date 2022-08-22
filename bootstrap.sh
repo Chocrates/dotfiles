@@ -11,4 +11,4 @@ sudo dpkg-reconfigure --frontend noninteractive tzdata
 sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply Chocrates
 
 # Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
