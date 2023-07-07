@@ -118,7 +118,7 @@ alias findbin='find . -type f -not -path "./.git/*" -exec perl -MFile::Basename 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH=":$(pyenv root)/shims:$PATH:$HOME/.rvm/bin:/usr/local/mysql/bin:/usr/local/opt/llvm/bin"
 export PIPENV_PYTHON=$PYENV_ROOT/shims/python
-alias vim="/usr/local/bin/nvim"
+alias vim="/usr/bin/nvim"
 export VISUAL=ewrap
 export EDITOR=nvim
 eval "$(pyenv init -)"
