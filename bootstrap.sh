@@ -8,14 +8,15 @@ sudo apt-get install -y \
   zsh \
   build-essential \
   openssl
+  libfuse2
+
+mkdir -p $HOME/bin
 
 # Configure zsh as default shell
 sudo chsh -s $(which zsh) vscode
 
 # Install neovim
-NVIM_VERSION=0.7.0
-sudo apt-get install -y libfuse2
-curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
+curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 chmod a+x $HOME/bin/nvim
 
 ## Install rustup and common components
