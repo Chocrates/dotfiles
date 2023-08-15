@@ -162,14 +162,8 @@ n ()
 # added by github/training-manual class setup
 test -f "$HOME/.trainingmanualrc" && source "$HOME/.trainingmanualrc"
 
-source ~/.trainingmanualrc
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
 
 alias inflate='ruby -r zlib -e "STDOUT.write Zlib::Inflate.inflate(STDIN.read)"'
-
-~/.tmux/plugins/tmux-logging/scripts/toggle_logging.sh
-
-# added by github/training-manual class setup
-test -f "/home/chris/.trainingmanualrc" && source "/home/chris/.trainingmanualrc"
