@@ -115,14 +115,15 @@ function zipdiff() { diff -W200 -y --suppress-common-lines <(unzip -vql $1 | sor
 alias findbin='find . -type f -not -path "./.git/*" -exec perl -MFile::Basename -e '\''print (-T $_ ? "" : (fileparse ($_, qr/\.[^.]*/))[2] . "\n" ) for @ARGV'\'' {} + | sort | uniq'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH=":$(pyenv root)/shims:$PATH:$HOME/.rvm/bin:/usr/local/mysql/bin:/usr/local/opt/llvm/bin"
-export PIPENV_PYTHON=$PYENV_ROOT/shims/python
-alias vim="/usr/bin/nvim"
-export VISUAL=ewrap
+export PATH="$PATH:$HOME/bin:$HOME/.rvm/bin:/usr/local/mysql/bin:/usr/local/opt/llvm/bin"
+alias vim="$(which nvim)"
+export VISUAL=nvim
 export EDITOR=nvim
-eval "$(pyenv init -)"
 
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+export PIPENV_PYTHON=$PYENV_ROOT/shims/python
 
 # NNN Config
 alias nnn='nnn -e'
@@ -170,4 +171,5 @@ alias inflate='ruby -r zlib -e "STDOUT.write Zlib::Inflate.inflate(STDIN.read)"'
 
 ~/.tmux/plugins/tmux-logging/scripts/toggle_logging.sh
 
-
+# added by github/training-manual class setup
+test -f "/home/chris/.trainingmanualrc" && source "/home/chris/.trainingmanualrc"
