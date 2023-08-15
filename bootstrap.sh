@@ -7,7 +7,7 @@ sudo apt-get install -y \
   sudo \
   zsh \
   build-essential \
-  openssl
+  openssl \
   libfuse2
 
 mkdir -p $HOME/bin
