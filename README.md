@@ -1,6 +1,11 @@
 # Dotfiles Repository
 This contains my current set of dotfiles managed with [chezmoi](https://github.com/twpayne/chezmoi).
 
+## Quickstart
+```
+sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply Chocrates
+```
+
 ## Setup
 - [Install chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md)
 - Checkout this repo with `chezmoi`
