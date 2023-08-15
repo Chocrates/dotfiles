@@ -19,6 +19,9 @@ sudo chsh -s $(which zsh) vscode
 curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 chmod a+x $HOME/bin/nvim
 
+# Make Pyenv stop complaining
+curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+
 ## Install rustup and common components
 curl https://sh.rustup.rs -sSf | sh -s -- -y 
 rustup install nightly
