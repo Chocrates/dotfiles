@@ -10,6 +10,7 @@ PACKAGES_NEEDED="\
     zsh \
     build-essential \
     openssl \
+    libssl-dev \
     fuse \
     dialog \
     apt-utils \
