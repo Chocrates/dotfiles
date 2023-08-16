@@ -3,6 +3,7 @@
 PACKAGES_NEEDED="\
     curl \
     git \
+    kmod \
     gnupg2 \
     jq \
     sudo \
