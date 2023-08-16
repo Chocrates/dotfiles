@@ -11,6 +11,7 @@ PACKAGES_NEEDED="\
     build-essential \
     openssl \
     libssl-dev \
+    pkg-config \
     fuse \
     dialog \
     apt-utils \
