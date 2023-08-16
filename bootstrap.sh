@@ -1,24 +1,38 @@
 #!/bin/bash
-sudo apt-get update
-sudo apt-get install -y \
-  curl \
-  git \
-  gnupg2 \
-  jq \
-  sudo \
-  zsh \
-  build-essential \
-  openssl \
-  libfuse2
+# Install curl, tar, git, other dependencies if missing
+PACKAGES_NEEDED="\
+    curl \
+    git \
+    gnupg2 \
+    jq \
+    sudo \
+    zsh \
+    build-essential \
+    openssl \
+    fuse \
+    dialog \
+    apt-utils \
+    libfuse2"
 
-mkdir -p $HOME/bin
+if ! dpkg -s ${PACKAGES_NEEDED} > /dev/null 2>&1; then
+    if [ ! -d "/var/lib/apt/lists" ] || [ "$(ls /var/lib/apt/lists/ | wc -l)" = "0" ]; then
+        sudo apt-get update
+    fi
+    sudo echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+    sudo apt-get -y -q install ${PACKAGES_NEEDED}
+fi
+
+# install latest neovim
+sudo modprobe fuse
+sudo groupadd fuse
+sudo usermod -a -G fuse "$(whoami)"
+
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+sudo chmod u+x nvim.appimage
+sudo mv nvim.appimage /usr/local/bin/nvim
 
 # Configure zsh as default shell
 sudo chsh -s $(which zsh) vscode
-
-# Install neovim
-curl -L -o $HOME/bin/nvim https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-chmod a+x $HOME/bin/nvim
 
 # Make Pyenv stop complaining
 curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
