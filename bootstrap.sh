@@ -15,7 +15,9 @@ PACKAGES_NEEDED="\
     fuse \
     dialog \
     apt-utils \
-    libfuse2"
+    libfuse2 \
+    nodejs
+    npm" 
 
 if ! dpkg -s ${PACKAGES_NEEDED} > /dev/null 2>&1; then
     if [ ! -d "/var/lib/apt/lists" ] || [ "$(ls /var/lib/apt/lists/ | wc -l)" = "0" ]; then
