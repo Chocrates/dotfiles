@@ -57,4 +57,8 @@ return require('packer').startup(function(use)
     }
 
     use("github/copilot")
+
+    use('mrtazz/vim-plan')
+
+    use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
 end)
