@@ -21,29 +21,103 @@ lsp.format_on_save({
 
 
 require('lspconfig')['elmls'].setup({
-  settings = {
-    elmLS = {
-      command = 'elm-language-server'
+    settings = {
+        elmLS = {
+            command = 'elm-language-server'
+        }
     }
-  }
 })
+
+local check_backspace = function()
+    local col = vim.fn.col(".") - 1
+    return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
+end
+
+-- https://github.com/zbirenbaum/copilot-cmp#tab-completion-configuration-highly-recommended
+local has_words_before = function()
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+        return false
+    end
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
+end
 
 
 local cmp = require('cmp')
+local luasnip = require("luasnip")
+
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
-local cmp_mappings = lsp.defaults.cmp_mappings({
-    ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-    ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+local cmp_mappings = cmp.mapping.preset.insert({
+    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-y>"] = cmp.config.disable,
+    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ["<Tab>"] = vim.schedule_wrap(function(fallback)
+        if cmp.visible() and has_words_before() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+        elseif cmp.visible() then
+            cmp.select_next_item()
+        elseif luasnip.expandable() then
+            luasnip.expand()
+        elseif luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+        elseif check_backspace() then
+            fallback()
+        else
+            fallback()
+        end
+    end),
+    ["<S-Tab>"] = vim.schedule_wrap(function(fallback)
+        if cmp.visible() then
+            cmp.select_prev_item()
+        elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+        else
+            fallback()
+        end
+    end),
 })
 
 -- cmp_mappings['<Tab>'] = nil -- Might be breaking copilot
-cmp_mappings['<S-Tab>'] = nil
+-- cmp_mappings['<S-Tab>'] = nil
+
+local cmp_sorting = {
+    priority_weight = 2,
+    comparators = {
+        -- Give Copilot priority and then use the default comparators
+        require("copilot_cmp.comparators").prioritize,
+
+        cmp.config.compare.offset,
+        cmp.config.compare.exact,
+        -- cmp.config.compare.scopes,
+        cmp.config.compare.score,
+        cmp.config.compare.recently_used,
+        cmp.config.compare.locality,
+        cmp.config.compare.kind,
+        -- cmp.config.compare.sort_text,
+        cmp.config.compare.length,
+        cmp.config.compare.order,
+    },
+}
+
+local cmp_sources = {
+    { name = "copilot" },
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "nvim_lua" },
+    { name = "cmp_git" },
+    { name = "path" },
+}
 
 lsp.setup_nvim_cmp({
-    mapping = cmp_mappings
+    mapping = cmp_mappings,
+    sorting = cmp_sorting,
+    sources = cmp_sources
 })
+
+require("cmp_git").setup()
 
 lsp.set_preferences({
     -- suggest_lsp_servers = false,

@@ -27,7 +27,6 @@ return require('packer').startup(function(use)
     use('ThePrimeagen/harpoon')
     use('mbbill/undotree')
     use('tpope/vim-fugitive')
-
     use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
@@ -45,7 +44,48 @@ return require('packer').startup(function(use)
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },     -- Required
             { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-            { 'L3MON4D3/LuaSnip' },     -- Required
+            { "hrsh7th/cmp-buffer" },
+            { "hrsh7th/cmp-cmdline" },
+            { "hrsh7th/cmp-path" },
+            { "hrsh7th/cmp-nvim-lua" },
+            { "saadparwaiz1/cmp_luasnip" },
+            {
+                "petertriho/cmp-git",
+                requires = {
+                    "nvim-lua/plenary.nvim",
+                },
+            },
+            {
+                "zbirenbaum/copilot-cmp",
+                requires = {
+                    "zbirenbaum/copilot.lua",
+                    cmd = "Copilot",
+                    event = "InsertEnter",
+                    config = function()
+                        require("copilot").setup({
+                            suggestion = { enabled = false },
+                            panel = { enabled = false },
+                        })
+                    end,
+                },
+                config = function()
+                    require("copilot_cmp").setup()
+                end,
+            },
+            {
+                "L3MON4D3/LuaSnip",
+                requires = {
+                    {
+                        "rafamadriz/friendly-snippets",
+                        config = function()
+                            require("luasnip.loaders.from_vscode").lazy_load()
+                            require("luasnip").filetype_extend("ruby", { "rails" })
+                        end,
+                    },
+                },
+            },
+
+
         }
 
     }
@@ -60,5 +100,21 @@ return require('packer').startup(function(use)
 
     use('mrtazz/vim-plan')
 
-    use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
+    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+
+    use {
+        'pwntester/octo.nvim',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope.nvim',
+            'nvim-tree/nvim-web-devicons',
+        },
+    }
+
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
 end)
