@@ -159,13 +159,15 @@ n ()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
-# added by github/training-manual class setup
-test -f "$HOME/.trainingmanualrc" && source "$HOME/.trainingmanualrc"
 
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
 
 alias inflate='ruby -r zlib -e "STDOUT.write Zlib::Inflate.inflate(STDIN.read)"'
-alias kubectl="microk8s kubectl"
-alias helm="microk8s helm"
+
+function minify-pem {
+    awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' $1
+}
+
+source $HOME/.fico.zshrc
