@@ -188,13 +188,17 @@ lock-bw() {
 
 load-pw() {
     unlock-bw-if-locked
-    local github_token
-    github_token="$(bw get password $1)"
-    export GITHUB_TOKEN="$github_token"
+    eval export $2="$(bw get password $1)"
+    >&2 echo "$2 exported"
     lock-bw
 }
 
 load-gh() {
     local -r github_pat_id='d6b8f164-f8cd-4157-b0ed-ac6a00e8b678'
-    load-pw $github_pat_id
+    load-pw $github_pat_id GITHUB_TOKEN
+}
+
+load-art() {
+    local -r artifactory_id='bddad533-1925-40fb-8047-b1650154f4d5'
+    load-pw $artifactory_id ARTIFACTORY_TOKEN
 }
