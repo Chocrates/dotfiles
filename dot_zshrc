@@ -120,10 +120,10 @@ alias vim="$(which nvim)"
 export VISUAL=nvim
 export EDITOR=nvim
 
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-export PIPENV_PYTHON=$PYENV_ROOT/shims/python
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
+# export PIPENV_PYTHON=$PYENV_ROOT/shims/python
 
 # NNN Config
 alias nnn='nnn -e'
@@ -166,8 +166,35 @@ complete -o nospace -C /usr/local/bin/terraform terraform
 
 alias inflate='ruby -r zlib -e "STDOUT.write Zlib::Inflate.inflate(STDIN.read)"'
 
-function minify-pem {
+minify-pem() {
     awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' $1
 }
 
 source $HOME/.fico.zshrc
+
+unlock-bw-if-locked() {
+    if [[ -z $BW_SESSION ]] ; then
+        >&2 echo 'bw locked - unlocking into a new session'
+        export BW_SESSION="$(bw unlock --raw)"
+    fi
+}
+
+lock-bw() {
+    # Doesn't need to be a function, but allows us 
+    # to expand the logic later if we need, in one spot
+    unset BW_SESSION
+    >&2 echo 'bw locked'
+}
+
+load-pw() {
+    unlock-bw-if-locked
+    local github_token
+    github_token="$(bw get password $1)"
+    export GITHUB_TOKEN="$github_token"
+    lock-bw
+}
+
+load-gh() {
+    local -r github_pat_id='d6b8f164-f8cd-4157-b0ed-ac6a00e8b678'
+    load-pw $github_pat_id
+}
