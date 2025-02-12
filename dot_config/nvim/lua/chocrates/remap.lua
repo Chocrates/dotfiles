@@ -39,3 +39,12 @@ vim.keymap.set("n", "<C-j>", "<cmd>copilot#Accept(\"<CR>\")")
 
 --   imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
 --       let g:copilot_no_tab_map = v:true
+--
+-- local expand = require('chocrates.nvimtree_expand_all')
+--
+-- vim.keymap.set('n', '<leader>e', expand.expand_tree, {
+--   noremap = true,
+--   silent = true,
+--   desc = "Expand all directories in NvimTree"
+-- })
+

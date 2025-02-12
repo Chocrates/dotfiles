@@ -7,7 +7,7 @@ return require('packer').startup(function(use)
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.1',
+        'nvim-telescope/telescope.nvim', tag = '0.1.8',
         -- or                            , branch = '0.1.x',
         requires = { { 'nvim-lua/plenary.nvim' } }
     }
@@ -20,7 +20,23 @@ return require('packer').startup(function(use)
         end
     })
 
-    use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
+    use('nvim-treesitter/nvim-treesitter', {
+        run = ':TSUpdate',
+        config = function()
+            require("nvim-treesitter.configs").setup {
+                highlight = {
+                    enable = true,
+                },
+                ensure_installed = {
+                    "vimdoc",
+                    "luadoc",
+                    "vim",
+                    "lua",
+                    "markdown"
+                }
+            }
+        end,
+    })
 
     use('nvim-treesitter/playground')
 
@@ -107,8 +123,10 @@ return require('packer').startup(function(use)
         requires = {
             'nvim-lua/plenary.nvim',
             'nvim-telescope/telescope.nvim',
-            'nvim-tree/nvim-web-devicons',
         },
+        config = function()
+            require "octo".setup()
+        end
     }
 
     use {
@@ -117,4 +135,17 @@ return require('packer').startup(function(use)
             require('Comment').setup()
         end
     }
+
+    use("lbrayner/vim-rzip")
+
+    use { "mxsdev/nvim-dap-vscode-js", requires = { "mfussenegger/nvim-dap" } }
+    use {
+        "microsoft/vscode-js-debug",
+        opt = true,
+        run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"
+    }
+
+    use 'ray-x/go.nvim'
+    use 'ray-x/guihua.lua' -- recommended if need floating window support
+
 end)
