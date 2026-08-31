@@ -1,63 +1,53 @@
-#!/bin/bash
-# Install curl, tar, git, other dependencies if missing
-PACKAGES_NEEDED="\
-    curl \
-    git \
-    kmod \
-    gnupg2 \
-    jq \
-    sudo \
-    zsh \
-    build-essential \
-    openssl \
-    libssl-dev \
-    pkg-config \
-    fuse \
-    dialog \
-    apt-utils \
-    libfuse2 \
-    nodejs
-    npm" 
+#!/usr/bin/env bash
+#
+# Bare-metal bootstrap for a new machine or container.
+#
+# Installs the minimum needed to run chezmoi, then hands everything else over
+# to `chezmoi init --apply`, which pulls this repo, installs packages via the
+# .chezmoiscripts/ hooks, and installs toolchains via mise.
+#
+#   curl -fsSL https://raw.githubusercontent.com/Chocrates/dotfiles/main/bootstrap.sh | bash
+#
+set -euo pipefail
 
-if ! dpkg -s ${PACKAGES_NEEDED} > /dev/null 2>&1; then
-    if [ ! -d "/var/lib/apt/lists" ] || [ "$(ls /var/lib/apt/lists/ | wc -l)" = "0" ]; then
-        sudo apt-get update
-    fi
-    sudo echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
-    sudo apt-get -y -q install ${PACKAGES_NEEDED}
+GITHUB_USER="${GITHUB_USER:-Chocrates}"
+BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
+
+log() { printf '\033[1;32m==>\033[0m %s\n' "$*"; }
+
+# --- prerequisites -----------------------------------------------------------
+if command -v apt-get >/dev/null 2>&1; then
+    log "installing bootstrap prerequisites via apt"
+    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        ca-certificates curl git gnupg2 unzip zsh
+elif command -v brew >/dev/null 2>&1; then
+    log "installing bootstrap prerequisites via brew"
+    brew install curl git gnupg zsh
+else
+    log "no supported package manager found; assuming curl/git/zsh are present"
 fi
 
-# install latest neovim
-sudo modprobe fuse
-sudo groupadd fuse
-sudo usermod -a -G fuse "$(whoami)"
+mkdir -p "$BIN_DIR"
+export PATH="$BIN_DIR:$PATH"
 
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-sudo chmod u+x nvim.appimage
-sudo mv nvim.appimage /usr/local/bin/nvim
+# --- chezmoi -----------------------------------------------------------------
+if ! command -v chezmoi >/dev/null 2>&1; then
+    log "installing chezmoi into $BIN_DIR"
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$BIN_DIR"
+fi
 
-# Configure zsh as default shell
-sudo chsh -s $(which zsh) vscode
+# --- default shell -----------------------------------------------------------
+# Skipped when zsh is already the login shell, and when running as a user whose
+# shell we cannot change (most CI and container images).
+if [ "$(basename "${SHELL:-}")" != "zsh" ] && command -v zsh >/dev/null 2>&1; then
+    log "setting zsh as the login shell for $(whoami)"
+    sudo chsh -s "$(command -v zsh)" "$(whoami)" || \
+        log "could not change login shell; do it manually with: chsh -s $(command -v zsh)"
+fi
 
-# Make Pyenv stop complaining
-curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+# --- everything else ---------------------------------------------------------
+log "applying dotfiles"
+chezmoi init --apply "$GITHUB_USER"
 
-## Install rustup and common components
-curl https://sh.rustup.rs -sSf | sh -s -- -y 
-source "$HOME/.cargo/env"
-
-rustup install nightly
-rustup component add rustfmt
-rustup component add rustfmt --toolchain nightly
-rustup component add clippy 
-rustup component add clippy --toolchain nightly
-
-# Set timezone
-sudo ln -fs /usr/share/zoneinfo/America/Chicago /etc/localtime
-sudo dpkg-reconfigure --frontend noninteractive tzdata
-
-# Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# Install chezmoi and dotfiles from this repository
-sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply Chocrates
+log "done. Start a new shell, or: exec zsh"

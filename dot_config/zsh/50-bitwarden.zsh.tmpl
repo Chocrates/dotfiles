@@ -1,0 +1,42 @@
+# Bitwarden helpers: pull a secret into the environment only for as long as it
+# is needed, then relock. Based on
+# https://blog.gruntwork.io/how-to-securely-store-secrets-in-bitwarden-cli-and-load-them-into-your-zsh-shell-when-needed-f12d4d040df
+#
+# Nothing here is defined if the bw CLI is not installed.
+if (( $+commands[bw] )); then
+
+    unlock-bw-if-locked() {
+        if [[ -z $BW_SESSION ]]; then
+            >&2 echo 'bw locked - unlocking into a new session'
+            export BW_SESSION="$(bw unlock --raw)"
+        fi
+    }
+
+    lock-bw() {
+        # Does not strictly need to be a function, but keeps the teardown
+        # logic in one place if it ever grows.
+        unset BW_SESSION
+        >&2 echo 'bw locked'
+    }
+
+    # load-pw <bitwarden-item-id> <ENV_VAR_NAME>
+    load-pw() {
+        unlock-bw-if-locked
+        eval export "$2"="$(bw get password "$1")"
+        >&2 echo "$2 exported"
+        lock-bw
+    }
+
+{{ if eq .machine "work" }}
+    load-gh() {
+        local -r github_pat_id='d6b8f164-f8cd-4157-b0ed-ac6a00e8b678'
+        load-pw $github_pat_id GITHUB_TOKEN
+    }
+
+    load-art() {
+        local -r artifactory_id='bddad533-1925-40fb-8047-b1650154f4d5'
+        load-pw $artifactory_id ARTIFACTORY_TOKEN
+    }
+{{- end }}
+
+fi

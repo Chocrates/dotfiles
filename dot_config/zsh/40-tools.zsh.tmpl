@@ -1,0 +1,45 @@
+# Version managers, completions and per-tool setup.
+# Everything here is guarded so a machine missing the tool still gets a
+# working shell.
+
+# mise handles node/go/terraform/etc. It is activated BEFORE pyenv on purpose:
+# both prepend a shims directory, and whichever runs last wins. pyenv stays
+# the authority for Python until that migration is done deliberately.
+(( $+commands[mise] )) && eval "$(mise activate zsh)"
+
+export PYENV_ROOT="$HOME/.pyenv"
+if [[ -d $PYENV_ROOT/bin ]]; then
+    path=("$PYENV_ROOT/bin" $path)
+fi
+if (( $+commands[pyenv] )); then
+    eval "$(pyenv init -)"
+    pyenv virtualenv-init --help &>/dev/null && eval "$(pyenv virtualenv-init -)"
+fi
+
+export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvm"
+[[ -d "$HOME/.nvm" ]] && export NVM_DIR="$HOME/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+
+# bashcompinit is needed for the bash-style `complete -C` completions below.
+autoload -U +X bashcompinit && bashcompinit
+(( $+commands[terraform] )) && complete -o nospace -C "$commands[terraform]" terraform
+(( $+commands[green] )) && source "$(green --completion-file)"
+
+{{ if eq .machine "personal" -}}
+# --- personal box only ---
+if [[ -d "$HOME/workspace/ai/llama.cpp/build/bin" ]]; then
+    export LLAMA_BUILD="$HOME/workspace/ai/llama.cpp/build/bin"
+    path=("$LLAMA_BUILD" $path)
+fi
+[[ -d "$HOME/models" ]] && export MODELS_DIR="$HOME/models"
+
+for _pi_node in "$HOME/.local/share/pi-node"/node-*/bin(N); do
+    path=("$_pi_node" $path)
+done
+unset _pi_node
+
+# Compact system readout on new shells.
+if [[ -o interactive ]] && (( $+commands[fastfetch] )); then
+    fastfetch -c "$HOME/.config/fastfetch/config-compact.jsonc"
+fi
+{{- end }}

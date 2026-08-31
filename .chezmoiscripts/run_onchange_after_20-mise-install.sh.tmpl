@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# mise config hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
+set -euo pipefail
+
+if ! command -v mise >/dev/null 2>&1; then
+    echo "installing mise"
+    curl -fsSL https://mise.run | sh
+fi
+
+MISE="${MISE:-$HOME/.local/bin/mise}"
+command -v mise >/dev/null 2>&1 && MISE=mise
+
+"$MISE" install

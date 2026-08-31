@@ -1,0 +1,32 @@
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[diff]
+	algorithm = histogram
+	colorMoved = default
+[rerere]
+	enabled = true
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gitlab.com"]
+	helper =
+	helper = !glab auth git-credential
+[include]
+	# Machine-local overrides (work identity, proxies, signing keys).
+	path = ~/.gitconfig.local

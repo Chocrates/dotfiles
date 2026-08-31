@@ -1,0 +1,19 @@
+# Global default toolchain versions, installed by `mise install`.
+# Project-level .mise.toml / .tool-versions still override these.
+#
+# NOTE: python is deliberately absent - pyenv still owns Python on these
+# machines. See dot_config/zsh/40-tools.zsh.tmpl.
+
+[tools]
+node = "lts"
+go = "latest"
+rust = "stable"
+terraform = "latest"
+jq = "latest"
+ripgrep = "latest"
+fd = "latest"
+lazygit = "latest"
+
+[settings]
+experimental = true
+idiomatic_version_file_enable_tools = []

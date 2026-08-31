@@ -1,0 +1,53 @@
+{{- /* Prefer the system node: a version-manager node (nvm, mise, pi's bundled
+       runtime) can vanish on upgrade and silently break every hook. */ -}}
+{{- $node := "" -}}
+{{- if stat "/usr/bin/node" }}{{ $node = "/usr/bin/node" }}
+{{- else if stat "/usr/local/bin/node" }}{{ $node = "/usr/local/bin/node" }}
+{{- else }}{{ $node = lookPath "node" }}{{ end -}}
+{{- $home := .chezmoi.homeDir -}}
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{ $node }}\" \"{{ $home }}/.claude/hooks/caveman-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading caveman mode..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{ $node }}\" \"{{ $home }}/.claude/hooks/caveman-mode-tracker.js\"",
+            "timeout": 5,
+            "statusMessage": "Tracking caveman mode..."
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"{{ $home }}/.claude/hooks/caveman-statusline.sh\""
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  },
+  "theme": "dark",
+  "model": "opus"
+}

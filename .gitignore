@@ -1,0 +1,3 @@
+# chezmoi-generated / machine-local
+*.local
+.direnv/

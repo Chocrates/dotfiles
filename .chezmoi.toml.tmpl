@@ -1,0 +1,8 @@
+{{- $machine := promptStringOnce . "machine" "Machine type (personal/work)" "personal" -}}
+{{- $email := promptStringOnce . "email" "Git email" "rougechampion2002@gmail.com" -}}
+{{- $name := promptStringOnce . "name" "Git name" "Chris McIntosh" -}}
+
+[data]
+    machine = {{ $machine | quote }}
+    email = {{ $email | quote }}
+    name = {{ $name | quote }}

@@ -1,0 +1,26 @@
+# ~/.zshrc — managed by chezmoi.
+# Edit the source, not this file: `chezmoi edit ~/.zshrc && chezmoi apply`
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="agnosterzak"
+
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# Modular config, sourced in lexical order. (N) is nullglob, so an empty
+# directory is not an error.
+for _zsh_part in "${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N); do
+    source "$_zsh_part"
+done
+unset _zsh_part
+
+# Machine-local overrides that are deliberately not versioned.
+for _zsh_local in "$HOME/.zshrc.local" {{ if eq .machine "work" }}"$HOME/.fico.zshrc"{{ end }}; do
+    [[ -r "$_zsh_local" ]] && source "$_zsh_local"
+done
+unset _zsh_local

@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: shellcheck
+        run: |
+          shellcheck --severity=warning bootstrap.sh
+
+      - name: verify chezmoi templates render
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+          export PATH="$HOME/.local/bin:$PATH"
+          for machine in personal work; do
+            dest="$(mktemp -d)"
+            cat > "$RUNNER_TEMP/chezmoi-$machine.toml" <<CONF
+          sourceDir = "$GITHUB_WORKSPACE"
+          [data]
+          machine = "$machine"
+          email = "ci@example.com"
+          name = "CI"
+          CONF
+            echo "--- $machine ---"
+            chezmoi --config "$RUNNER_TEMP/chezmoi-$machine.toml" \
+                    --destination "$dest" --no-tty apply --dry-run --verbose
+          done
+
+  shell-syntax:
+    name: zsh syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: parse zsh sources
+        run: |
+          # Templates are checked by the render job above; this parses the
+          # non-templated shell modules directly.
+          for f in dot_config/zsh/*.zsh; do
+            [ -e "$f" ] || continue
+            echo "checking $f"
+            zsh -n "$f"
+          done

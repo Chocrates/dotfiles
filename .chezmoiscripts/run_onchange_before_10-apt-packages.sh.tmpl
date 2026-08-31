@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Reruns whenever the package list below changes, because chezmoi hashes the
+# rendered script.
+set -euo pipefail
+
+command -v apt-get >/dev/null 2>&1 || exit 0
+
+packages=(
+    build-essential
+    curl
+    fzf
+    git
+    gnupg2
+    jq
+    libfuse2t64
+    libssl-dev
+    lsd
+    openssl
+    pkg-config
+    ripgrep
+    tmux
+    unzip
+    xsel
+    zsh
+)
+
+missing=()
+for pkg in "${packages[@]}"; do
+    dpkg -s "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
+done
+
+if [ ${#missing[@]} -eq 0 ]; then
+    exit 0
+fi
+
+echo "installing: ${missing[*]}"
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "${missing[@]}"
