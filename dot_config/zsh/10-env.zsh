@@ -8,6 +8,25 @@ typeset -U path fpath
 _path_prepend() { [[ -d "$1" ]] && path=("$1" $path) }
 _path_append()  { [[ -d "$1" ]] && path=($path "$1") }
 
+# Homebrew, if present. Apple Silicon uses /opt/homebrew, Intel /usr/local.
+# shellenv sets PATH, MANPATH, INFOPATH and HOMEBREW_* in one go, so nothing
+# below needs to hardcode a prefix.
+for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    if [[ -x $_brew ]]; then
+        eval "$("$_brew" shellenv)"
+        break
+    fi
+done
+unset _brew
+
+# GNU coreutils from Homebrew install g-prefixed; put the real names first so
+# scripts written against GNU behaviour work.
+if [[ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]]; then
+    _path_prepend /opt/homebrew/opt/coreutils/libexec/gnubin
+elif [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]; then
+    _path_prepend /usr/local/opt/coreutils/libexec/gnubin
+fi
+
 _path_append "$HOME/bin"
 _path_append "$HOME/.local/bin"
 _path_append "$HOME/.cargo/bin"

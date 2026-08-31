@@ -8,6 +8,9 @@ plugins=(
     git
     zsh-autosuggestions
     zsh-syntax-highlighting
+{{- if eq .chezmoi.os "darwin" }}
+    macos
+{{- end }}
 )
 
 source "$ZSH/oh-my-zsh.sh"

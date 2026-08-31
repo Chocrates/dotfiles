@@ -4,8 +4,10 @@
 if (( $+commands[lsd] )); then
     alias ls='lsd'
     alias lt='ls --tree'
+elif ls --color=auto >/dev/null 2>&1; then
+    alias ls='ls --color=auto'   # GNU coreutils
 else
-    alias ls='ls --color=auto'
+    alias ls='ls -G'             # BSD ls, i.e. stock macOS
 fi
 alias l='ls -l'
 alias la='ls -a'

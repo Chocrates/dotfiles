@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# macOS counterpart to the apt script. Reruns whenever the list below changes.
+set -euo pipefail
+
+{{ if ne .chezmoi.os "darwin" }}exit 0{{ end }}
+
+if ! command -v brew >/dev/null 2>&1; then
+    # Homebrew installs to different prefixes on Apple Silicon and Intel.
+    for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+        [ -x "$candidate" ] && eval "$("$candidate" shellenv)" && break
+    done
+fi
+
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew not installed; skipping packages. Run bootstrap.sh first." >&2
+    exit 0
+fi
+
+# Counterparts to the apt list. Omitted deliberately:
+#   build-essential -> Xcode Command Line Tools (installed by bootstrap.sh)
+#   libfuse2t64     -> no macOS equivalent
+#   unzip           -> ships with macOS
+#   xsel            -> pbcopy/pbpaste ship with macOS
+packages=(
+    coreutils
+    curl
+    fzf
+    git
+    gnupg
+    jq
+    lsd
+    openssl@3
+    pkg-config
+    ripgrep
+    tmux
+    zsh
+)
+
+missing=()
+for pkg in "${packages[@]}"; do
+    brew list --formula "$pkg" >/dev/null 2>&1 || missing+=("$pkg")
+done
+
+if [ ${#missing[@]} -eq 0 ]; then
+    exit 0
+fi
+
+echo "installing: ${missing[*]}"
+brew install "${missing[@]}"

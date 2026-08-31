@@ -74,6 +74,32 @@ directory Claude rewrites during a session. See `.chezmoiignore`.
 - `auth.json`, `settings.json`, sessions and model catalogs are ignored — the
   first holds an API credential and the rest are rewritten by pi at runtime.
 
+## macOS
+
+The repo is cross-platform. Everything OS-specific branches on
+`.chezmoi.os`, so the same source tree serves both:
+
+| Concern | Linux | macOS |
+| --- | --- | --- |
+| Packages | `10-apt-packages` (apt) | `11-brew-packages` (Homebrew) |
+| Toolchains | mise | mise |
+| PATH | plain | `brew shellenv` + GNU coreutils `gnubin` first |
+| `ls` | `lsd`, else `ls --color=auto` | `lsd`, else `ls -G` |
+| tmux paste | `xsel` | `pbpaste`, chosen at runtime by `if-shell` |
+| oh-my-zsh | — | `macos` plugin added |
+
+Bootstrap on a fresh Mac:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Chocrates/dotfiles/main/bootstrap.sh | bash
+```
+
+It installs the Xcode Command Line Tools if missing (a GUI prompt — accept it,
+then rerun the script), then Homebrew, then chezmoi, then applies everything.
+
+Answer `personal` or `work` at the machine prompt; that is independent of the
+OS and only controls which extras load.
+
 ## Machine variance
 
 Anything that differs between boxes is templated on `.machine`:

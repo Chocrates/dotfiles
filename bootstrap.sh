@@ -21,7 +21,30 @@ if command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update
     sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
         ca-certificates curl git gnupg2 unzip zsh
-elif command -v brew >/dev/null 2>&1; then
+elif [ "$(uname -s)" = "Darwin" ]; then
+    # Compilers first: Homebrew and several formulae need them, and the
+    # installer is a GUI prompt that cannot be scripted around.
+    if ! xcode-select -p >/dev/null 2>&1; then
+        log "installing Xcode Command Line Tools (accept the GUI prompt, then rerun)"
+        xcode-select --install || true
+        exit 1
+    fi
+
+    if ! command -v brew >/dev/null 2>&1; then
+        for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+            [ -x "$candidate" ] && eval "$("$candidate" shellenv)" && break
+        done
+    fi
+
+    if ! command -v brew >/dev/null 2>&1; then
+        log "installing Homebrew"
+        NONINTERACTIVE=1 /bin/bash -c \
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        for candidate in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+            [ -x "$candidate" ] && eval "$("$candidate" shellenv)" && break
+        done
+    fi
+
     log "installing bootstrap prerequisites via brew"
     brew install curl git gnupg zsh
 else

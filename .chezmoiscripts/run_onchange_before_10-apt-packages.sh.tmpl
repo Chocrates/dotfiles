@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Reruns whenever the package list below changes, because chezmoi hashes the
-# rendered script.
+# Debian/Ubuntu packages. Reruns whenever the list below changes, because
+# chezmoi hashes the rendered script. macOS is handled by 11-brew-packages.
 set -euo pipefail
+
+{{ if ne .chezmoi.os "linux" }}exit 0{{ end }}
 
 command -v apt-get >/dev/null 2>&1 || exit 0
 
